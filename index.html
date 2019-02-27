@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!-- Make the app on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>cesium-learning</title>
+    <!-- The Cesium library. -->
+    <script src="ThirdParty/Cesium/Cesium.js"></script>
+    <!-- Style our app. -->
+    <link rel="stylesheet" href="index.css" media="screen">
+    <link rel="stylesheet" href="./Source/css/bucket.css" media="screen">
+
+
+</head>
+<body>
+<!-- A container for the Cesium Viewer to live in. -->
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<div id="toolbar"></div>
+
+<!--导航栏-->
+<ul class="nav">
+    <li><a href="javascript:;" onclick="flyTo(-2177855, 4388913, 4069999, -120, -30, 0)">flyTo球场</a></li>
+    <li><a href="javascript:;" onclick="flyTo(-2177857, 4388768, 4070115, 0, -10, 0)">flyTo数据工程部</a></li>
+
+    <li>
+        <input type="radio" id="checkbox" name="radio"/>
+        <a href="javascript:;" id="restore_btn">复原模型（鼠标左键选中部件，右键删除）</a>
+    </li>
+    <li>
+        <input type="radio" id="checkbox2" name="radio"/>
+        <a href="javascript:;" id="restore_btn2">视频</a>
+    </li>
+    <li>
+        <input type="radio" id="checkbox3" name="radio"/>
+        <a href="javascript:;" id="restore_btn3">火灾</a>
+    </li>
+    <li><a href="javascript:;" id="chart_btn">统计</a></li>
+    <li>
+      <a href="javascript:;" id="toolbar_btn">人口柱状图(切换显示)</a>
+    </li>
+    <li>
+        移动模型：
+        <input type="button" value="z+" onclick="change(4)">
+        <input type="button" value="z-" onclick="change(5)">
+        <div style="padding-left: 30px">
+            <!-- <div id="main" style="width: 300px;height:300px;"></div> -->
+        </div>
+    </li>
+
+   
+</ul>-->
+<!--统计弹层-->
+<div class="chart-box" id="chart_box">
+    <div class="canvas" id="chart_canvas"></div>
+    <div class="close" id="chart_close">+</div>
+</div>
+
+<script>
+  var viewer = new Cesium.Viewer('cesiumContainer', {
+    // terrainProvider: Cesium.createWorldTerrain()
+      shouldAnimate: true,
+  });
+  var tileset = viewer.scene.primitives.add(
+    new Cesium.Cesium3DTileset({url: "./model/3D/tileset.json"
+    })
+  );
+
+  tileset.readyPromise.then(function(data) {
+    console.log(data)
+  });
+
+  viewer.zoomTo(tileset);
+
+  viewer.homeButton.viewModel.command.beforeExecute.addEventListener(function (e) {
+    e.cancel = true;
+    viewer.zoomTo(tileset);
+  });
+
+  function flyTo(x, y, z, a, b, c) {
+    viewer.camera.flyTo({
+      destination: new Cesium.Cartesian3(x, y, z),
+      orientation: {
+        heading : Cesium.Math.toRadians(a || 0),
+        pitch : Cesium.Math.toRadians(b || 0),
+        roll : Cesium.Math.toRadians(c || 0)
+      }
+    });
+  }
+
+
+</script>
+<!-- Our app code. -->
+
+<!--交互相关-->
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="Source/interaction.js"></script>
+<script src="Source/fire.js"></script>
+<script src="Source/video.js"></script>
+<script src="Source/move.js"></script>
+<!-- 人口柱状图 -->
+<script src="Source/populationColumnar.js"></script>
+
+</body>
+</html>
